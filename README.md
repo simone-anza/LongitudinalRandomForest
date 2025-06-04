@@ -1,83 +1,80 @@
 # LongitudinalRandomForest
-LongitudinalRandomForest: A novel framework for analyzing compositional data in longitudinal studies using Random Forest models. Maintains sample independence through intelligent randomization, ensuring one sample per subject per iteration while utilizing all available data across runs. Ideal for compositional data analysis challenges.
 
-##LongitudinalRandomForest
-A robust framework for analyzing longitudinal compositional data using randomized sampling and Random Forest models.
+**LongitudinalRandomForest** is a novel framework for analyzing compositional data in longitudinal studies using Random Forest models. It intelligently handles subject-level sampling to ensure one sample per subject per iteration, maximizing data independence while enabling full dataset utilization across runs.
 
-###Overview
-LongitudinalRandomForest is a specialized tool designed to analyze longitudinal compositional data (such as microbiome data) while addressing the challenges of repeated measures and subject independence. The framework uses a novel randomization approach to ensure that each analysis iteration uses exactly one sample per subject, maximizing data independence while utilizing all available samples over multiple iterations.
-Key Features
+---
 
-Subject-Independent Sampling: Ensures each analysis run contains only one sample per subject
-Complete Sample Coverage: All samples appear at least once across iterations
-Compositional Data Analysis: Specifically designed for microbiome and other compositional data types
-Random Forest Implementation: Leverages both classification and regression capabilities
-Cross-Validation: Implements robust 10×10-fold cross-validation
+## Overview
 
-###Methodology
-Sample Randomization Process
-For longitudinal datasets with multiple samples per subject (e.g., 5 samples per subject):
+This framework is specifically designed to address key challenges in analyzing longitudinal **compositional** data—such as microbiome profiles—by:
 
-The orchestrator creates N datasets (where N ≥ number of samples per subject)
-Each dataset contains exactly one sample per subject
-Different samples are selected for each subject across repetitions
-This ensures no repeated samples per subject within a dataset
-All samples appear at least once across all datasets
+- Ensuring **subject independence** through randomized sampling
+- Handling **repeated measures** in a statistically valid way
+- Utilizing **Random Forest models** for both regression and classification
+- Implementing **cross-validation** with robust sampling strategies
 
-##Analysis Workflow
-The framework categorizes data based on a variable of interest (e.g., maternal cytokines):
+---
 
-Category 0: Middle values (25-75% of distribution)
-Category 1: Extreme values (bottom 25% and top 75% of distribution)
+## Key Features
 
-For each category:
+- **Subject-Independent Sampling**  
+  Each run includes only one sample per subject to avoid intra-subject correlation.
 
-Use compositional data (e.g., microbial abundances) to predict an outcome (e.g., age)
-Apply the randomization approach to ensure one sample per subject
-Perform multiple repetitions of 10-fold cross-validation
-Compare predictions between categories to assess impact of the variable of interest
+- **Full Sample Coverage**  
+  All samples appear at least once across multiple randomized datasets.
 
-##Use Case
-The primary use case is investigating how a variable of interest (such as maternal cytokines during pregnancy) might influence another outcome (such as biological aging) as measured through compositional data (like gut microbiome profiles).
-Requirements
+- **Compositional Data Support**  
+  Ideal for datasets like microbiome profiles that require special considerations.
 
-Python 3.7+
-scikit-learn
-numpy
-pandas
-bash (for orchestration)
+- **Flexible ML Tasks**  
+  Supports both **classification** and **regression** modes.
 
-#Installation
-bashgit clone https://github.com/yourusername/LongitudinalRandomForest.git
-cd LongitudinalRandomForest
-pip install -r requirements.txt
-Usage
-Basic Usage
-bash./run_analysis.sh --input_data your_data.csv --subject_col subject_id --timepoint_col visit --outcome age --category_var maternal_cytokines
-Configuration
-Create a config file to customize analysis parameters:
-json{
-  "n_iterations": 10,
-  "n_folds": 10,
-  "random_state": 42,
-  "min_samples_leaf": 5,
-  "n_estimators": 500
-}
-Then run with:
-bash./run_analysis.sh --config my_config.json --input_data your_data.csv
-Output
-The framework produces:
+- **Cross-Validation Ready**  
+  Implements multiple folds and repetitions for robust evaluation.
 
-Performance metrics for each category
-Comparison statistics between categories
-Visualizations of prediction performance
-Feature importance rankings
+---
 
-Citation
-If you use this framework in your research, please cite:
-Simone Anzà (2025). LongitudinalRandomForest: A Framework for Analyzing Longitudinal Compositional Data Using Randomized Sampling and Random Forest Models
+## Methodology
 
-#License
-This project is licensed under the MIT License - see the LICENSE file for details.
-Contributing
-Contributions are welcome! Please feel free to submit a Pull Request.
+### Sample Randomization
+
+For subjects with multiple samples (e.g., 5 timepoints per individual):
+
+- The orchestrator creates **N random subsets** (where N ≥ number of timepoints)
+- Each subset contains **one sample per subject**
+- All subsets together ensure **complete sample coverage**
+
+This design allows robust analysis while maintaining independence between samples.
+
+---
+
+## Analysis Workflow
+
+1. **Split dataset** based on a variable of interest (e.g., maternal cytokine levels):
+    - `Category 0`: Mid-range values (e.g., 25–75th percentile)
+    - `Category 1`: Extremes (e.g., lowest 25% and highest 25%)
+
+2. **Train models** using microbiome (or other compositional) data to predict a target (e.g., infant age).
+
+3. **Run Random Forest** on 5 balanced folds (1 sample/subject), repeat across both categories.
+
+4. **Predict external group** using models trained on the other subset.
+
+5. **Average predictions** across folds for final output.
+
+---
+
+## 📂 Repository Structure
+
+```bash
+├── run_orchestrator.sh           # Main orchestration script
+├── codes/
+│   ├── regr_for_external_dataset_pred.py
+│   ├── parse_ML_results.py
+│   ├── create_balanced_folds.py
+│   └── average_external_predictions.py
+├── data/
+│   ├── microbiome_data.tsv
+│   └── metadata.tsv
+└── results/
+    └── ...
