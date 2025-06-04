@@ -56,11 +56,13 @@ This design allows robust analysis while maintaining independence between sample
 
 2. **Train models** using microbiome (or other compositional) data to predict a target (e.g., infant age).
 
-3. **Run Random Forest** on 5 balanced folds (1 sample/subject), repeat across both categories.
+3. **Run Random Forest** on 5 balanced subsets (1 sample/subject), repeat across both categories.
 
-4. **Predict external group** using models trained on the other subset.
+4. **Cross-Validation** perfomed with 10 folds 10 times per each subset of data.
 
-5. **Average predictions** across folds for final output.
+5. **Predict external group** using models trained on the other subset.
+
+6. **Average predictions** across folds for final output.
 
 ---
 
