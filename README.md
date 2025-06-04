@@ -69,7 +69,7 @@ This design allows robust analysis while maintaining independence between sample
 ## 📂 Repository Structure
 
 ```bash
-├── run_orchestrator.sh           # Main orchestration script
+├── orchestrator.sh           # Main orchestration script
 ├── codes/
 │   ├── regr_for_external_dataset_pred.py
 │   ├── parse_ML_results.py
